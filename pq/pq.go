@@ -41,17 +41,17 @@ func (heap *max[T]) Pop() any {
 	return m
 }
 
-// PQ is an exported priority queue of k-D tree nodes with a maximum queue size.
-// PQ tracks a specified number points with the smallest given priorities --
-// attempting to add a point with a larger priority will result in an effective
-// no-op.
+// PQ is a max-priority queue of arbitrary data with a maximum queue size. Data
+// popped from the queue is of highest priority.
 type PQ[T any] struct {
 	heap *max[T]
 	n    int
 }
 
+// New creates a priority queue instance. Size indicates the maximum size of the
+// heap -- a size of 0 indicates no limit on the queue size.
 func New[T any](size int) *PQ[T] {
-	h := max[T](make([]*node[T], 0, size))
+	h := max[T](make([]*node[T], 0, int(math.Max(100.0, float64(size)))))
 	pq := &PQ[T]{
 		heap: &h,
 		n:    size,
@@ -62,7 +62,7 @@ func New[T any](size int) *PQ[T] {
 
 func (pq *PQ[T]) Len() int    { return pq.heap.Len() }
 func (pq *PQ[T]) Empty() bool { return pq.Len() == 0 }
-func (pq *PQ[T]) Full() bool  { return pq.Len() >= pq.n }
+func (pq *PQ[T]) Full() bool  { return pq.n > 0 && pq.Len() >= pq.n }
 
 // Priority calculates the current highest priority of the queue.
 func (pq *PQ[T]) Priority() float64 {
