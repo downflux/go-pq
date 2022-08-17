@@ -83,7 +83,7 @@ func (pq *PQ[T]) Push(p T, priority float64) {
 		p:      p,
 		weight: priority,
 	})
-	for !pq.Empty() && pq.Len() > pq.n {
+	for !pq.Empty() && pq.Len() > pq.n && pq.n > 0 {
 		pq.Pop()
 	}
 }

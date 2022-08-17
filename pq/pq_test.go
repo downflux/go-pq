@@ -47,7 +47,7 @@ func TestPQ(t *testing.T) {
 			},
 		},
 		{
-			name: "Trivial/NoSize",
+			name: "Trivial/NoSizeLimit",
 			data: []item{
 				{
 					p:        X{1},
@@ -55,7 +55,9 @@ func TestPQ(t *testing.T) {
 				},
 			},
 			size: 0,
-			want: nil,
+			want: []X{
+				X{1},
+			},
 		},
 
 		{
