@@ -3,6 +3,8 @@ Golang generic priority queue implementation
 
 This priority queue may be backed by either a min or max heap, depending on user specification.
 
+This queue is not thread-safe. The user must add their own lock wrappers around this queue.
+
 ## Example
 
 ```golang
