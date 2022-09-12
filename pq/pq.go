@@ -14,10 +14,10 @@ const (
 )
 
 func (p P) w(w float64) float64 {
-	return map[P]float64{
-		PMin: -w,
-		PMax: w,
-	}[p]
+	if p == PMin {
+		w *= -1
+	}
+	return w
 }
 
 type node[T any] struct {
