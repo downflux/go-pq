@@ -5,6 +5,21 @@ import (
 	"math"
 )
 
+// P is the queue priority type, i.e. a queue backed by a min- or max-heap.
+type P bool
+
+const (
+	PMin = false
+	PMax = true
+)
+
+func (p P) P(w float64) float64 {
+	return map[P]float64{
+		PMin: -w,
+		PMax: w,
+	}[p]
+}
+
 type node[T any] struct {
 	p      T
 	index  int
@@ -41,20 +56,23 @@ func (heap *max[T]) Pop() any {
 	return m
 }
 
-// PQ is a max-priority queue of arbitrary data with a maximum queue size. Data
-// popped from the queue is of highest priority.
+// PQ is a priority queue of arbitrary data with a maximum queue size. Data
+// popped from the queue is of highest priority. The priority queue may be a
+// max or min queue.
 type PQ[T any] struct {
 	heap *max[T]
 	n    int
+	p    P
 }
 
 // New creates a priority queue instance. Size indicates the maximum size of the
 // heap -- a size of 0 indicates no limit on the queue size.
-func New[T any](size int) *PQ[T] {
+func New[T any](size int, priority P) *PQ[T] {
 	h := max[T](make([]*node[T], 0, int(math.Max(100.0, float64(size)))))
 	pq := &PQ[T]{
 		heap: &h,
 		n:    size,
+		p:    priority,
 	}
 	heap.Init(pq.heap)
 	return pq
@@ -71,7 +89,7 @@ func (pq *PQ[T]) Priority() float64 {
 	}
 
 	// See https://groups.google.com/g/golang-nuts/c/sy1p8SfyPoY.
-	return (*pq.heap)[0].weight
+	return pq.p.P((*pq.heap)[0].weight)
 }
 
 // Push adds a new point into the queue.
@@ -81,7 +99,7 @@ func (pq *PQ[T]) Priority() float64 {
 func (pq *PQ[T]) Push(p T, priority float64) {
 	heap.Push(pq.heap, &node[T]{
 		p:      p,
-		weight: priority,
+		weight: pq.p.P(priority),
 	})
 	for !pq.Empty() && pq.Len() > pq.n && pq.n > 0 {
 		pq.Pop()
