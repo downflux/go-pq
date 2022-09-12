@@ -94,7 +94,7 @@ func (pq *PQ[T]) Priority() float64 {
 
 // Push adds a new point into the queue.
 //
-// The queue will enforce the struct size constraint by removing elements frmo
+// The queue will enforce the struct size constraint by removing elements from
 // itself until the constraint is satisfied.
 func (pq *PQ[T]) Push(p T, priority float64) {
 	heap.Push(pq.heap, &node[T]{
