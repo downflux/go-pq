@@ -2,6 +2,7 @@ package pq
 
 import (
 	"container/heap"
+	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -59,7 +60,6 @@ func TestPQ(t *testing.T) {
 				X{1},
 			},
 		},
-
 		{
 			name: "Sorted",
 			data: []item{
@@ -162,8 +162,8 @@ func TestPQ(t *testing.T) {
 	}
 
 	for _, c := range configs {
-		t.Run(c.name, func(t *testing.T) {
-			pq := New[X](c.size)
+		t.Run(fmt.Sprintf("Max/%v", c.name), func(t *testing.T) {
+			pq := New[X](c.size, PMax)
 			for _, d := range c.data {
 				pq.Push(d.p, d.priority)
 			}
@@ -175,6 +175,30 @@ func TestPQ(t *testing.T) {
 
 			if diff := cmp.Diff(
 				c.want, got,
+			); diff != "" {
+				t.Errorf("Pop() mismatch (-want +got):\n%v", diff)
+			}
+		})
+		// Run automated tests using a min-PQ instead. This test is
+		// auto-generated.
+		t.Run(fmt.Sprintf("Min/%v", c.name), func(t *testing.T) {
+			var want []X
+			for i := 0; i < len(c.want); i++ {
+				want = append(want, c.want[len(c.want)-i-1])
+			}
+
+			pq := New[X](c.size, PMin)
+			for _, d := range c.data {
+				pq.Push(d.p, d.priority)
+			}
+
+			var got []X
+			for !pq.Empty() {
+				got = append(got, pq.Pop())
+			}
+
+			if diff := cmp.Diff(
+				want, got,
 			); diff != "" {
 				t.Errorf("Pop() mismatch (-want +got):\n%v", diff)
 			}
