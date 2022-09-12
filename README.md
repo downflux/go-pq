@@ -22,7 +22,10 @@ func main() {
 	qmin := pq.New[F](2, pq.PMin)
 	qmax := pq.New[F](2, pq.PMax)
 
-	qmin.Push( /* data = */ 418 /* priority = */, 10)
+	qmin.Push(
+		/* data = */ 418,
+		/* priority = */ 10,
+	)
 	qmax.Push(418, 10)
 	qmin.Push(42, 1)
 	qmax.Push(42, 1)
