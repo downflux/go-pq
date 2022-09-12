@@ -13,11 +13,11 @@ const (
 	PMax = true
 )
 
-func (p P) P(w float64) float64 {
-	return map[P]float64{
-		PMin: -w,
-		PMax: w,
-	}[p]
+func (p P) w(w float64) float64 {
+	if p == PMin {
+		w *= -1
+	}
+	return w
 }
 
 type node[T any] struct {
@@ -89,17 +89,17 @@ func (pq *PQ[T]) Priority() float64 {
 	}
 
 	// See https://groups.google.com/g/golang-nuts/c/sy1p8SfyPoY.
-	return pq.p.P((*pq.heap)[0].weight)
+	return pq.p.w((*pq.heap)[0].weight)
 }
 
 // Push adds a new point into the queue.
 //
-// The queue will enforce the struct size constraint by removing elements frmo
+// The queue will enforce the struct size constraint by removing elements from
 // itself until the constraint is satisfied.
 func (pq *PQ[T]) Push(p T, priority float64) {
 	heap.Push(pq.heap, &node[T]{
 		p:      p,
-		weight: pq.p.P(priority),
+		weight: pq.p.w(priority),
 	})
 	for !pq.Empty() && pq.Len() > pq.n && pq.n > 0 {
 		pq.Pop()
