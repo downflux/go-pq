@@ -106,5 +106,9 @@ func (pq *PQ[T]) Push(p T, priority float64) {
 	}
 }
 
-// Pop removes the node with the highest priority from the queue.
-func (pq *PQ[T]) Pop() T { return heap.Pop(pq.heap).(*node[T]).p }
+// Pop removes the node with the highest (or lowest) priority from the queue.
+func (pq *PQ[T]) Pop() (T, float64) {
+	p := pq.Priority()
+	d := heap.Pop(pq.heap).(*node[T]).p
+	return d, p
+}

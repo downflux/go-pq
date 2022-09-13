@@ -30,17 +30,11 @@ func main() {
 	qmin.Push(42, 1)
 	qmax.Push(42, 1)
 
-	if p := qmin.Priority(); p != 1 {
-		panic(fmt.Sprintf("found an unexpected priority for the next element in the priority queue: %v", p))
+	if data, p := qmin.Pop(); p != 1 || data != 42 {
+		panic(fmt.Sprintf("found an unexpected value from pq.Pop(): %v, %v", p, data))
 	}
-	if p := qmax.Priority(); p != 10 {
-		panic(fmt.Sprintf("found an unexpected priority for the next element in the priority queue: %v", p))
-	}
-	if data := qmin.Pop(); data != 42 {
-		panic(fmt.Sprintf("did not find the correct value from the queue: %v", data))
-	}
-	if data := qmax.Pop(); data != 418 {
-		panic(fmt.Sprintf("did not find the correct value from the queue: %v", data))
+	if data, p := qmax.Pop(); p != 10 || data != 418 {
+		panic(fmt.Sprintf("found an unexpected value from pq.Pop(): %v, %v", p, data))
 	}
 }
 ```

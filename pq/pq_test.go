@@ -170,7 +170,8 @@ func TestPQ(t *testing.T) {
 
 			var got []X
 			for !pq.Empty() {
-				got = append(got, pq.Pop())
+				d, _ := pq.Pop()
+				got = append(got, d)
 			}
 
 			if diff := cmp.Diff(
@@ -194,7 +195,8 @@ func TestPQ(t *testing.T) {
 
 			var got []X
 			for !pq.Empty() {
-				got = append(got, pq.Pop())
+				d, _ := pq.Pop()
+				got = append(got, d)
 			}
 
 			if diff := cmp.Diff(
